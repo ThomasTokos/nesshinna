@@ -56,3 +56,6 @@ typings/
 
 # dotenv environment variables file
 .env
+
+# npm package lockfile
+package-lock.json
