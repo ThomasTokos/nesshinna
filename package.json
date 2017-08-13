@@ -1,0 +1,19 @@
+{
+  "name": "nesshinna",
+  "version": "0.0.1-indev",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "eslint --fix . && node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ffxhand/nesshinna.git"
+  },
+  "author": "ffxhand",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/ffxhand/nesshinna/issues"
+  },
+  "homepage": "https://github.com/ffxhand/nesshinna#readme"
+}
