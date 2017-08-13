@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/ffxhand/nesshinna/issues"
   },
-  "homepage": "https://github.com/ffxhand/nesshinna#readme"
+  "homepage": "https://github.com/ffxhand/nesshinna#readme",
+  "devDependencies": {
+    "eslint": "^4.4.1"
+  }
 }
