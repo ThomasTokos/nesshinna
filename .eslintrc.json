@@ -1,0 +1,89 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 8,
+    "sourceType": "module"
+  },
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "extends": "eslint:recommended",
+  "rules": {
+    "indent": [
+      "error",
+      2
+    ],
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "quotes": [
+      "error",
+      "double"
+    ],
+    "semi": [
+      "error",
+      "always"
+    ],
+    "for-direction": "error",
+    "getter-return": "error",
+    "no-await-in-loop": "error",
+    "no-compare-neg-zero": "error",
+    "no-console": "warn",
+    "no-cond-assign": [
+      "error",
+      "always"
+    ],
+    "no-control-regex": "error",
+    "no-debugger": "error",
+    "no-dupe-args": "error",
+    "no-dupe-keys": "error",
+    "no-duplicate-case": "error",
+    "no-empty": "warn",
+    "no-empty-character-class": "error",
+    "no-ex-assign": "error",
+    "no-extra-boolean-cast": "error",
+    "no-extra-parens": "error",
+    "no-extra-semi": "error",
+    "no-func-assign": "error",
+    "no-inner-declarations": "error",
+    "no-invalid-regexp": "error",
+    "no-irregular-whitespace": "error",
+    "no-obj-calls": "error",
+    "no-regex-spaces": "error",
+    "no-sparse-arrays": "error",
+    "no-template-curly-in-string": "warn",
+    "no-unexpected-multiline": "error",
+    "no-unreachable": "error",
+    "no-unsafe-finally": "error",
+    "no-unsafe-negation": "error",
+    "use-isnan": "error",
+    "valid-typeof": "error",
+    "block-scoped-var": "error",
+    "class-methods-use-this": "warn",
+    "complexity": [
+      "error",
+      4
+    ],
+    "curly": [
+      "warn",
+      "multi-or-nest"
+    ],
+    "default-case": "error",
+    "dot-notation": "error",
+    "eqeqeq": "error",
+    "guard-for-in": "warn",
+    "no-case-declarations": "error",
+    "no-else-return": "error",
+    "no-empty-function": "error",
+    "no-eq-null": "error",
+    "no-eval": "error",
+    "no-extra-label": "error",
+    "no-fallthrough": "error",
+    "no-floating-decimal": "error",
+    "no-global-assign": "error",
+    "no-implied-eval": "error",
+    "no-invalid-this": "error",
+    "no-unused-vars": "off"
+  }
+}
