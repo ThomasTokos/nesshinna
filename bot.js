@@ -2,6 +2,8 @@ const Discord = require("discord.js");
 const Sequelize = require("sequelize");
 const reload = require("require-reload")(require);
 
+const logger = require("./util/logger");
+
 class Application {
   constructor() {
     this.client = new Discord.Client({
