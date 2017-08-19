@@ -12,16 +12,16 @@ class Application {
     this.config = require("./config.json");
 
     this.database = new Sequelize({
-        dialect: "mysql",
-        host: this.config.db.host,
-        username: this.config.db.user,
-        password: this.config.db.pass,
-        database: this.config.db.database,
-        // TODO: logging: [function Function],
-      });
+      dialect: "mysql",
+      host: this.config.db.host,
+      username: this.config.db.user,
+      password: this.config.db.pass,
+      database: this.config.db.database,
+      // TODO: logging: [function Function],
+    });
   }
 
-  get embed(options) {
+  embed(options) {
     return Object.assign({
       title: `${this.client.user.username}`,
       color: 0x0086FF,
@@ -29,3 +29,5 @@ class Application {
     }, options);
   }
 }
+
+module.exports = Application;
