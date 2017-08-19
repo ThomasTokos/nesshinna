@@ -1,5 +1,6 @@
 const Discord = require("discord.js");
 const Sequelize = require("sequelize");
+const reload = require("require-reload")(require);
 
 class Application {
   constructor() {
