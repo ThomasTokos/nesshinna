@@ -20,7 +20,7 @@
     "chalk": "^2.1.0",
     "discord.js": "^11.1.0",
     "fs": "0.0.1-security",
-    "prompt": "^1.0.0",
+    "inquirer": "^3.2.2",
     "require-reload": "^0.2.2",
     "sequelize": "^4.5.0"
   }
