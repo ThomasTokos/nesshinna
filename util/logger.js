@@ -1,33 +1,34 @@
+"use strict";
+
 const chalk = require("chalk");
 
 class Logger {
   /* eslint no-console: "off" */
-  static _message(context, mod, message) {
-    if(!mod)
-      return `${context}`;
-
-    if(!message)
-      return `${context}:${mod}`;
-
-    return `${context}:${mod}:${message}`;
+  static _message(...params) {
+    return [...params].join(":");
   }
 
-  static log(mod, message) {
+  static log(...params) {
     return console.log(
       this._message(
-        mod, message));
+        ...params));
   }
 
-  static error(mod, message) {
+  static print(...params) {
+    return this.log(
+      ...params);
+  }
+
+  static error(...params) {
     return console.error(
       this._message(
-        chalk.red("err"), mod, message));
+        chalk.red("err"), ...params));
   }
 
-  static info(mod, message) {
+  static info(...params) {
     return console.info(
       this._message(
-        chalk.cyan("info"), mod, message));
+        chalk.cyan("info"), ...params));
   }
 }
 
