@@ -38,6 +38,7 @@
     "no-debugger": "error",
     "no-dupe-args": "error",
     "no-dupe-keys": "error",
+    "no-dupe-class-members": "off",
     "no-duplicate-case": "error",
     "no-empty": "warn",
     "no-empty-character-class": "error",
