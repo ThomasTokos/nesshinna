@@ -61,10 +61,6 @@
     "use-isnan": "error",
     "valid-typeof": "error",
     "block-scoped-var": "error",
-    "complexity": [
-      "error",
-      4
-    ],
     "curly": [
       "warn",
       "multi-or-nest"
