@@ -30,6 +30,16 @@ class Logger {
       this._message(
         chalk.cyan("info"), ...params));
   }
+
+  static success(...params) {
+    return console.info(
+      this._message(
+        chalk.green("success"), ...params));
+  }
+
+  get color() {
+    return chalk;
+  }
 }
 
 module.exports = Logger;
