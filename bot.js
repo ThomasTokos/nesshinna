@@ -76,6 +76,49 @@ class Application {
     }
   }
 
+  loadModules() {
+    this.listeners = this.listeners || {};
+    this.modules = [];
+
+    this._deregisterListeners();
+
+    for(const filename of fs.readdirSync("./modules/")) {
+      if(!filename.endsWith(".js") || filename.endsWith(".disabled.js"))
+        continue;
+
+      const mod = reload("./modules/" + filename);
+      this.modules.push(mod);
+
+      for(const listener of mod.listeners) {
+        const event = listener[0];
+        const run = listener[1];
+
+        if(this.listeners[event] === undefined)
+          this.listeners[event] = [];
+
+        this.listeners[event].push(
+          (...args) => run(...args, this));
+      }
+
+      this._registerListeners();
+    }
+  }
+
+  _registerListeners() {
+    for(const event in this.listeners)
+      for(const listener of this.listeners[event]) {
+        this.client.on(event, listener);
+      }
+  }
+
+  _deregisterListeners() {
+    for(const event in this.listeners)
+      for(const listener of this.listeners[event])
+        this.client.removeListener(event, listener);
+
+    this.listeners = {};
+  }
+
   async _setup() {
     try {
       this.config = reload("./config.json");
@@ -125,6 +168,8 @@ class Application {
         `Error logging into gateway: ${err.message}`);
       return process.exit(1);
     }
+
+    this.loadModules();
   }
 }
 
