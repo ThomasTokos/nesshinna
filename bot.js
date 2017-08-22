@@ -24,7 +24,7 @@ class Application {
   }
 
   async _configSetup(resolve, reject) {
-    logger.log("\nWelcome! Let's get set up.\n");
+    logger.print("\nWelcome! Let's get set up.\n");
 
     const promptResponse = await inquirer.prompt([
       {
@@ -67,7 +67,7 @@ class Application {
           name: promptResponse.db_name,
         },
       }, null, 2), "utf8");
-      logger.info("autoconfig", "Config saved.");
+      logger.success("autoconfig", "Config saved.");
       return resolve(reload("./config.json"));
     } catch(err) {
       logger.error("autoconfig", `Error saving configuration: ${err.message}`);
@@ -90,15 +90,6 @@ class Application {
       ]
     });
 
-    try {
-      await this.client.login(
-        this.config.token);
-    } catch(err) {
-      logger.error("auth",
-        `Error logging into gateway: ${err.message}`);
-      return process.exit(1);
-    }
-
     this.database = new Sequelize({
       dialect: "mysql",
       host: this.config.database.host,
@@ -111,10 +102,27 @@ class Application {
 
     try {
       await this.database.authenticate();
-      logger.info("db", "Authenticated into database.");
+      logger.success("db", "Authenticated into database.");
     } catch(err) {
       logger.error("db",
         `Error logging into database: ${err.message}`);
+      return process.exit(1);
+    }
+
+    this.client.on("ready", () => {
+      logger.success(`Logged into gateway as ${this.client.user.tag}`);
+    });
+
+    this.client.on("disconnect", (err) => {
+      logger.error(`Disconnected from gateway: ${err.reason}`);
+    });
+
+    try {
+      await this.client.login(
+        this.config.token);
+    } catch(err) {
+      logger.error("auth",
+        `Error logging into gateway: ${err.message}`);
       return process.exit(1);
     }
   }
