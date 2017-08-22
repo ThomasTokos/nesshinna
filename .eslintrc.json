@@ -68,7 +68,6 @@
     "default-case": "error",
     "dot-notation": "error",
     "eqeqeq": "error",
-    "guard-for-in": "warn",
     "no-case-declarations": "error",
     "no-else-return": "error",
     "no-empty-function": "error",
