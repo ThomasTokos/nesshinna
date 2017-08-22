@@ -153,12 +153,14 @@ class Application {
     }
 
     this.client.on("ready", () => {
-      logger.success(`Logged into gateway as ${this.client.user.tag}`);
+      logger.info(`Logged into gateway as ${this.client.user.tag}`);
     });
 
     this.client.on("disconnect", (err) => {
       logger.error(`Disconnected from gateway: ${err.reason}`);
     });
+
+    this.loadModules();
 
     try {
       await this.client.login(
@@ -168,8 +170,6 @@ class Application {
         `Error logging into gateway: ${err.message}`);
       return process.exit(1);
     }
-
-    this.loadModules();
   }
 }
 
