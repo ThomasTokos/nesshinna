@@ -1,0 +1,12 @@
+{
+  "token": "*Bot token",
+  "db_host": "Database host",
+  "db_user": "Database user",
+  "db_pass": "*Database password",
+  "db_name": "Database name",
+  "global_admins": [
+    "Owner ID",
+    "Admin ID",
+    "Admin ID 2"
+  ]
+}
