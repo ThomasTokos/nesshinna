@@ -110,7 +110,7 @@ class Application {
         const run = command.run;
         const aliases = command.aliases;
 
-        this._commands[commandName] = (message) => {
+        this._commands[commandName] = async (message) => {
           let prefix = `=`,
             label,
             args,
@@ -120,7 +120,7 @@ class Application {
           if(!message.content.startsWith(prefix))
             return;
 
-
+          // TODO: guild prefix check
 
           args = message.content.slice(prefix.length).replace(/\s{2,}/g, " ").split(" ");
           label = args.shift();
@@ -128,11 +128,23 @@ class Application {
           if(!(label === commandName || aliases.includes(label.toLowerCase())))
             return;
 
-          console.log("running command " + commandName + " with label " + label);
-
           // start permission check
           if(guild) {
-            // check for mod, admin, owner
+            const roles = await this.Guild.find({
+              attributes: ["mod_role", "admin_role"],
+              where: {
+                id: guild.id,
+              },
+            }).dataValues || { mod_role: null, admin_role: null };
+
+            const mod_role = roles.mod_role;
+            const admin_role = roles.admin_role;
+
+            if(message.member.roles.has(mod_role))
+              permission = this.permissions.MOD;
+
+            if(message.member.roles.has(admin_role))
+              permission = this.permissions.ADMIN;
 
             if(guild.owner.id === message.author.id)
               permission = this.permissions.OWNER;
@@ -140,8 +152,9 @@ class Application {
 
           if(this.config.global_admins.includes(message.author.id))
             permission = this.permissions.GLOBAL_ADMIN;
+          // end permission check
 
-          run(label, message, args, permission, this);
+          return run(label, message, args, permission, this);
         };
       }
 
@@ -283,8 +296,7 @@ class Application {
       username: this.config.db_user,
       password: this.config.db_pass,
       database: this.config.db_name,
-      // logging: (message) =>
-      //   logger.log("db", message),
+      logging: null,
     });
 
     try {
