@@ -15,6 +15,16 @@ class Application {
     this._setup();
   }
 
+  get permissions() {
+    return Object.freeze({
+      USER: 0,
+      MOD: 1,
+      ADMIN: 2,
+      OWNER: 3,
+      GLOBAL_ADMIN: 4,
+    });
+  }
+
   embed(options) {
     return Object.assign({
       title: `${this.client.user.username || null}`,
@@ -35,7 +45,7 @@ class Application {
     for(const token in templateConfig) {
       const value = templateConfig[token];
       const label = Array.isArray(value) ? value[0] : value;
-      
+
       if(label.startsWith("*"))
         hidden.push(token);
 
@@ -72,6 +82,7 @@ class Application {
 
   loadModules() {
     this._listeners = this._listeners || {};
+    this._commands = this._commands || {};
     this.modules = [];
 
     this._deregisterListeners();
@@ -94,6 +105,46 @@ class Application {
           (...args) => run(...args, this));
       }
 
+      for(const commandName in mod.commands) {
+        const command = mod.commands[commandName];
+        const run = command.run;
+        const aliases = command.aliases;
+
+        this._commands[commandName] = (message) => {
+          let prefix = `=`,
+            label,
+            args,
+            permission = this.permissions.USER,
+            guild = message.guild || null;
+
+          if(!message.content.startsWith(prefix))
+            return;
+
+
+
+          args = message.content.slice(prefix.length).replace(/\s{2,}/g, " ").split(" ");
+          label = args.shift();
+
+          if(!(label === commandName || aliases.includes(label.toLowerCase())))
+            return;
+
+          console.log("running command " + commandName + " with label " + label);
+
+          // start permission check
+          if(guild) {
+            // check for mod, admin, owner
+
+            if(guild.owner.id === message.author.id)
+              permission = this.permissions.OWNER;
+          }
+
+          if(this.config.global_admins.includes(message.author.id))
+            permission = this.permissions.GLOBAL_ADMIN;
+
+          run(label, message, args, permission, this);
+        };
+      }
+
       this._registerListeners();
     }
   }
@@ -103,6 +154,9 @@ class Application {
       for(const listener of this._listeners[event]) {
         this.client.on(event, listener);
       }
+
+    for(const command in this._commands)
+      this.client.on("message", this._commands[command]);
   }
 
   _deregisterListeners() {
@@ -110,7 +164,11 @@ class Application {
       for(const listener of this._listeners[event])
         this.client.removeListener(event, listener);
 
+    for(const command in this._commands)
+      this.client.removeListener("message", this._commands[command]);
+
     this._listeners = {};
+    this._commands = [];
   }
 
   _setupDatabase() {
@@ -132,6 +190,16 @@ class Application {
       },
       prefix: {
         type: Sequelize.STRING(10),
+        allowNull: true,
+        defaultValue: null,
+      },
+      mod_role: {
+        type: Sequelize.BIGINT(64).UNSIGNED,
+        allowNull: true,
+        defaultValue: null,
+      },
+      admin_role: {
+        type: Sequelize.BIGINT(64).UNSIGNED,
         allowNull: true,
         defaultValue: null,
       },
@@ -215,8 +283,8 @@ class Application {
       username: this.config.db_user,
       password: this.config.db_pass,
       database: this.config.db_name,
-      logging: (message) =>
-        logger.log("db", message),
+      // logging: (message) =>
+      //   logger.log("db", message),
     });
 
     try {
