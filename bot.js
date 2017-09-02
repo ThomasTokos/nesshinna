@@ -27,7 +27,7 @@ class Application {
 
   embed(options) {
     return Object.assign({
-      title: `${this.client.user.username || null}`,
+      title: `${this.client.user.username}`,
       color: 0x0086FF,
       // TODO: url: `https://`,
     }, options || {});
@@ -82,7 +82,6 @@ class Application {
 
   loadModules() {
     this._listeners = this._listeners || {};
-    this._commands = this._commands || {};
     this.modules = [];
 
     this._deregisterListeners();
@@ -102,60 +101,13 @@ class Application {
           this._listeners[event] = [];
 
         this._listeners[event].push(
-          (...args) => run(...args, this));
-      }
-
-      for(const commandName in mod.commands) {
-        const command = mod.commands[commandName];
-        const run = command.run;
-        const aliases = command.aliases;
-
-        this._commands[commandName] = async (message) => {
-          let prefix = `=`,
-            label,
-            args,
-            permission = this.permissions.USER,
-            guild = message.guild || null;
-
-          if(!message.content.startsWith(prefix))
-            return;
-
-          // TODO: guild prefix check
-
-          args = message.content.slice(prefix.length).replace(/\s{2,}/g, " ").split(" ");
-          label = args.shift();
-
-          if(!(label === commandName || aliases.includes(label.toLowerCase())))
-            return;
-
-          // start permission check
-          if(guild) {
-            const roles = await this.Guild.find({
-              attributes: ["mod_role", "admin_role"],
-              where: {
-                id: guild.id,
-              },
-            }).dataValues || { mod_role: null, admin_role: null };
-
-            const mod_role = roles.mod_role;
-            const admin_role = roles.admin_role;
-
-            if(message.member.roles.has(mod_role))
-              permission = this.permissions.MOD;
-
-            if(message.member.roles.has(admin_role))
-              permission = this.permissions.ADMIN;
-
-            if(guild.owner.id === message.author.id)
-              permission = this.permissions.OWNER;
-          }
-
-          if(this.config.global_admins.includes(message.author.id))
-            permission = this.permissions.GLOBAL_ADMIN;
-          // end permission check
-
-          return run(label, message, args, permission, this);
-        };
+          (...args) => {
+            try {
+              run(...args, this);
+            } catch(err) {
+              logger.error("cmd", `Execution failed: ${err.message}`);
+            }
+          });
       }
 
       this._registerListeners();
@@ -164,12 +116,8 @@ class Application {
 
   _registerListeners() {
     for(const event in this._listeners)
-      for(const listener of this._listeners[event]) {
+      for(const listener of this._listeners[event])
         this.client.on(event, listener);
-      }
-
-    for(const command in this._commands)
-      this.client.on("message", this._commands[command]);
   }
 
   _deregisterListeners() {
@@ -177,11 +125,7 @@ class Application {
       for(const listener of this._listeners[event])
         this.client.removeListener(event, listener);
 
-    for(const command in this._commands)
-      this.client.removeListener("message", this._commands[command]);
-
     this._listeners = {};
-    this._commands = [];
   }
 
   _setupDatabase() {
